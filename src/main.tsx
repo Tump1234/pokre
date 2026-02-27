@@ -60,7 +60,7 @@ function RootWrapper() {
     }
   }, [progress]);
 
-  if (showLoading) return <HomePageLoading progress={progress} />;
+  // if (showLoading) return <HomePageLoading progress={progress} />; 
 
   return (
     <Suspense fallback={<HomePageLoading progress={progress} />}>
