@@ -24,8 +24,31 @@ const HomePage = memo(function HomePage() {
   const [selectedTableSecureId, setSelectedTableSecureId] = useState<string | null>(null);
   const [hasSetDefaultTable, setHasSetDefaultTable] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+
   const [category, setCategory] = useState<TableCategory>("Home");
   const handleNavigateToCashier = () => setCategory("Cashier");
+
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
+  const handleCategoryClick = (newCategory: TableCategory) => {
+    if (newCategory === "Ширээнүүд") {
+      if (isBottomSheetOpen) {
+        setIsClosing(true);
+        setTimeout(() => {
+          setAnimationKey((k) => k + 1);
+          setIsClosing(false);
+          setIsBottomSheetOpen(true);
+        }, 200);
+      } else {
+        setIsBottomSheetOpen(true);
+        setAnimationKey((k) => k + 1);
+      }
+    } else {
+      if (isBottomSheetOpen) setIsClosing(true);
+      setCategory(newCategory);
+    }
+  };
 
   const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
   const isMobile = useIsMobile();
@@ -34,7 +57,9 @@ const HomePage = memo(function HomePage() {
   const selectedTable = tableData?.find((t) => t.secureId === selectedTableSecureId) || null;
   const totalTables = tableData?.length ?? 0;
   const totalUsers = tableData?.reduce((acc, table) => acc + (table.activePlayers ?? 0), 0) ?? 0;
-
+  const handleClose = () => {
+    setIsClosing(true);
+  };
   const handleTablesLoaded = useCallback(() => {
     if (!isMobile && !hasSetDefaultTable && tableData && tableData.length > 0) {
       setSelectedTableSecureId(tableData[0].secureId);
@@ -65,6 +90,7 @@ const HomePage = memo(function HomePage() {
       case "Games":
         return <AdminChat />;
       case "Ширээнүүд":
+        return null;
       case "Тэмцээнүүд":
       case "Sit & Go":
       default:
@@ -103,7 +129,13 @@ const HomePage = memo(function HomePage() {
                 { key: "Тэмцээнүүд", label: "Тэмцээнүүд", icon: tournamentIcon },
                 { key: "Sit & Go", label: "Sit & Go", icon: sitgoIcon },
               ].map((c) => (
-                <button key={c.key} className={`category-btn ${category === c.key ? "active" : ""}`} onClick={() => setCategory(c.key as any)}>
+                <button
+                  key={c.key}
+                  className={`category-btn ${category === c.key ? "active" : ""}`}
+                  onClick={() => {
+                    setCategory(c.key as any);
+                  }}
+                >
                   <img src={c.icon} alt="" className="category-icon" />
                   <span>{c.label}</span>
                 </button>
@@ -148,7 +180,19 @@ const HomePage = memo(function HomePage() {
         </div>
 
         {isMobile ? (
-          <MobileCategory category={category} onChange={setCategory} isMenuOpen={isCategoryMenuOpen} onToggleMenu={toggleMenu} />
+          <MobileCategory
+            category={category}
+            onChange={handleCategoryClick}
+            isMenuOpen={isCategoryMenuOpen}
+            onToggleMenu={toggleMenu}
+            openBottomSheet={() => {
+              if (!isBottomSheetOpen) setIsBottomSheetOpen(true);
+              setAnimationKey((k) => k + 1);
+            }}
+            closeBottomSheet={() => {
+              if (isBottomSheetOpen) setIsClosing(true);
+            }}
+          />
         ) : (
           <MainFooter />
         )}
@@ -161,6 +205,33 @@ const HomePage = memo(function HomePage() {
               {modalType === "login" && <LoginForm setModalType={setModalType} />}
               {modalType === "register" && <RegisterForm setModalType={setModalType} />}
             </Suspense>
+          </div>
+        </div>
+      )}
+
+      {(isBottomSheetOpen || isClosing) && (
+        <div
+          key={animationKey}
+          className={`bottom-table-box ${isBottomSheetOpen && !isClosing ? "slide-up" : "slide-down"}`}
+          onClick={handleClose}
+          onAnimationEnd={() => {
+            if (isClosing) {
+              setIsBottomSheetOpen(false);
+              setIsClosing(false);
+            }
+          }}
+        >
+          <div
+            className="top-arrow"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClose();
+            }}
+          >
+            <div className="arrow-img"></div>
+          </div>
+          <div className="bottom-table-list">
+            <div className="list-table-1"></div>
           </div>
         </div>
       )}

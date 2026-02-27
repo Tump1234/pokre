@@ -261,18 +261,6 @@ export default function TexasTableGame() {
           <div className="image-container">
             <Suspense fallback={null}>{isMobile ? <PokerTableMobile /> : <PokerTableSVG />}</Suspense>
 
-            {/* DISABLED: Causing 193ms lag - Cards now appear instantly */}
-            {/* {showPreflopAnimation && dispatch({ type: "SET_HAS_DEALT_PREFLOP", payload: true })} */}
-            {/* Original animation code (disabled for performance):
-              <CardDealingAnimation
-                seatPositions={seatPositions}
-                seatStates={displayedSeats}
-                cardsPerSeat={cardsPerSeat}
-                size={60}
-                onAnimationComplete={() => dispatch({ type: "SET_HAS_DEALT_PREFLOP", payload: true })}
-              />
-            */}
-
             <MemoSeats
               gameState={seatsGameState}
               userInfo={userInfo}
@@ -308,8 +296,6 @@ export default function TexasTableGame() {
           </div>
         </div>
       </div>
-
-      {/* Hand Description now rendered under each player in TablePlayer component */}
 
       <Suspense fallback={null}>
         <PokerChat

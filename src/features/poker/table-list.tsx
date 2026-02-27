@@ -19,13 +19,14 @@ interface TableCardProps {
   variantLabel: string;
   mobileView: boolean;
   onClick: () => void;
+  className?: string;
 }
 
-const MobileTableCard = memo<TableCardProps>(({ record, activePlayers, variantLabel, onClick }) => {
+const MobileTableCard = memo<TableCardProps>(({ record, activePlayers, variantLabel, onClick, className }) => {
   const buyinRange = `${record.smallBlind.toLocaleString("en-US")}/${record.bigBlind.toLocaleString("en-US")}`;
   const variantClass = record.gameVariant?.toLowerCase();
   return (
-    <div className={`table-card ${variantClass}`} onClick={onClick}>
+    <div className={`table-card ${variantClass} ${className || ""}`} onClick={onClick}>
       <div className="table-info">
         <div className="table-name">{record.tableName || `Table ${record.tableId}`}</div>
         <div className="variant">{variantLabel}</div>
@@ -38,7 +39,7 @@ const MobileTableCard = memo<TableCardProps>(({ record, activePlayers, variantLa
   );
 });
 
-const DesktopTableCard = memo<TableCardProps>(({ record, activePlayers, variantLabel, onClick }) => {
+const DesktopTableCard = memo<TableCardProps>(({ record, activePlayers, variantLabel, onClick, className }) => {
   const buyinRange = `${record.minBuyIn.toLocaleString("en-US")} / ${record.maxBuyIn.toLocaleString("en-US")}`;
   const stake = `${record.smallBlind.toLocaleString("en-US")} / ${record.bigBlind.toLocaleString("en-US")}`;
   const variantClass = record.gameVariant?.toLowerCase();
@@ -46,7 +47,7 @@ const DesktopTableCard = memo<TableCardProps>(({ record, activePlayers, variantL
   const avgPot = seatStacks.length ? Math.floor(seatStacks.reduce((a, b) => a + b, 0) / seatStacks.length) : 0;
 
   return (
-    <div className={`table-card ${variantClass}`} onClick={onClick}>
+    <div className={`table-card ${variantClass} ${className || ""}`} onClick={onClick}>
       <div className="table-info">
         <span className="table-name">{record.tableName || `Table ${record.tableId}`}</span>
         <span className="variant">{variantLabel}</span>
@@ -70,15 +71,12 @@ const DesktopTableCard = memo<TableCardProps>(({ record, activePlayers, variantL
   );
 });
 
-const TableList = memo(function TableList({
-  isAuthenticated,
-  showLoginModal,
-  onTableClick,
-  onTablesLoaded,
-  mobileView = false,
-  refetch,
-}: TableListProps) {
-  const { data: tableData } = useFetchTablesQuery(undefined, { skip: false });
+const TableList = memo(function TableList({ isAuthenticated, showLoginModal, onTableClick, onTablesLoaded, mobileView = false }: TableListProps) {
+  const { data: tableData } = useFetchTablesQuery(undefined, {
+    skip: false,
+    pollingInterval: 4000,
+  });
+
   const [search, setSearch] = useState("");
   const [showEmpty, setShowEmpty] = useState(true);
   const [showFull, setShowFull] = useState(true);
@@ -95,6 +93,37 @@ const TableList = memo(function TableList({
 
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+
+  const getTableTier = (record: GameTable) => {
+    const sb = record.smallBlind;
+    const variant = record.gameVariant?.toLowerCase() || "texas";
+
+    if (variant === "texas") {
+      if (sb <= 50) return "texas-micro";
+      if (sb <= 100) return "texas-low";
+      if (sb <= 250) return "texas-medium";
+      if (sb <= 500) return "texas-high";
+      if (sb <= 1000) return "texas-super-high";
+      if (sb <= 2500) return "texas-mega";
+      if (sb <= 5000) return "texas-ultra";
+      if (sb <= 10000) return "texas-titan";
+      return "texas-legendary";
+    }
+
+    if (variant === "omaha") {
+      if (sb <= 25) return "omaha-micro";
+      if (sb <= 50) return "omaha-low";
+      if (sb <= 100) return "omaha-medium";
+      if (sb <= 250) return "omaha-high";
+      if (sb <= 500) return "omaha-super-high";
+      if (sb <= 1000) return "omaha-mega";
+      if (sb <= 2500) return "omaha-ultra";
+      if (sb <= 5000) return "omaha-titan";
+      return "omaha-legendary";
+    }
+
+    return "unknown-tier";
+  };
 
   const filteredAndSortedTables = useMemo(() => {
     if (!tableData) return [];
@@ -197,7 +226,6 @@ const TableList = memo(function TableList({
         {mobileView ? (
           <>
             <span className="table-count">Нийт ширээ: {filteredAndSortedTables.length}</span>
-            <div className="reload-table-mobile" onClick={refetch} />
           </>
         ) : (
           <>
@@ -229,6 +257,7 @@ const TableList = memo(function TableList({
               variantLabel={variantLabel}
               mobileView={mobileView}
               onClick={() => handleTableClick(record)}
+              className={getTableTier(record)}
             />
           ) : (
             <DesktopTableCard
@@ -238,6 +267,7 @@ const TableList = memo(function TableList({
               variantLabel={variantLabel}
               mobileView={mobileView}
               onClick={() => handleTableClick(record)}
+              className={getTableTier(record)}
             />
           );
         })}
@@ -297,8 +327,6 @@ const TableList = memo(function TableList({
             </label>
           </div>
         </div>
-
-        <div className="reload-table" onClick={refetch} />
       </div>
     </div>
   );

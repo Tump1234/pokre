@@ -5,7 +5,11 @@ import { setUserBalance } from "../providers/auth-slice";
 import { useMeQuery, userApi } from "../api/user";
 import { adminApi } from "../api/admin";
 
-const websocketURL = import.meta.env.VITE_BACKEND_URL.replace(/^https?:\/\//, "wss://") + "/ws/global";
+const backendURL = import.meta.env.VITE_BACKEND_URL;
+
+const wsProtocol = backendURL.startsWith("https") ? "wss" : "ws";
+
+const websocketURL = backendURL.replace(/^https?:\/\//, `${wsProtocol}://`) + "/ws/global";
 
 const jackpotAPIURL = import.meta.env.VITE_BACKEND_URL + "/api/v1/jackpot/current";
 

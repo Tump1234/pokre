@@ -325,7 +325,7 @@ body::-webkit-scrollbar {
 
 body {
   /* background: var(--dark-main); */
-  background-image: url(../assets/image/lobby-bg.webp);
+  background-image: url(../assets/image/main-bg.webp);
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
@@ -333,6 +333,18 @@ body {
   max-width: 1920px;
   margin: auto;
   overflow-x: hidden;
+}
+
+body:after {
+  content: "";
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #00000073;
+  pointer-events: none;
+  z-index: -1;
 }
 
 :lang(en) {

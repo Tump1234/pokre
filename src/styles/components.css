@@ -3015,6 +3015,7 @@ input[type="checkbox"]:disabled ~ .checkbox-label {
   justify-content: space-between;
   align-items: center;
   height: 4em;
+  z-index: 9999;
 }
 
 .mobile-category-btn {
@@ -3167,6 +3168,89 @@ input[type="checkbox"]:disabled ~ .checkbox-label {
   background-color: #d9243a;
 }
 
+.player-seats-container {
+  width: 90%;
+  height: 90%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* bottom table box */
+
+.bottom-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  margin-bottom: 4em;
+  z-index: 9998;
+}
+
+.bottom-table-box {
+  position: absolute;
+  height: auto;
+  width: 100%;
+  bottom: 4em;
+  left: 0;
+  background-color: #393948;
+  transform: translateY(100%) scaleY(0.95);
+  opacity: 0;
+}
+
+.bottom-table-box.slide-up {
+  animation: slideUp 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.bottom-table-box.slide-down {
+  animation: slideDown 0.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(100%) scaleY(0.95);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(-5%) scaleY(1.02);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(0) scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%) scaleY(0.95);
+    opacity: 0;
+  }
+}
+
+.top-arrow {
+  width: 100%;
+  height: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.top-arrow:active {
+  background-color: #2e2e3a;
+}
+
+.arrow-img {
+  width: 2.2em;
+  height: 100%;
+  background-image: url(../assets/image/icons/double-arrow-down-sidebar-eb257e5b5d2aadd9fd86.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 @media (max-width: 768px) {
   .auth-modal-container {
     max-width: 100vw !important;
@@ -3305,5 +3389,11 @@ input[type="checkbox"]:disabled ~ .checkbox-label {
 
   .bonus-amount {
     font-size: 2em;
+  }
+
+  /* seats positions */
+  .player-seats-container {
+    width: 80%;
+    height: 80%;
   }
 }

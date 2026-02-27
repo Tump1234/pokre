@@ -42,14 +42,13 @@ const TablePreview: React.FC<TablePreviewProps> = memo(({ table, isAuthenticated
     <div className="table-preview-wrapper">
       <div className="table-preview-content">
         <div className="table-preview-details">
-          <header>
-            {tableName} #{table.tableId}
-          </header>
+          <header>{tableName}</header>
 
           <div className="details-in-table">
             <div className="player-row header">
-              <span className="player-name">Тоглогч</span>
-              <span className="player-cash">Мөнгөн дүн</span>
+              <div className="player-name">Тоглогч</div>
+              <div className="player-flag-header">Улс</div>
+              <div className="player-cash">Мөнгөн дүн</div>
             </div>
 
             {seatsArray.map((seat, index) => {
@@ -60,8 +59,9 @@ const TablePreview: React.FC<TablePreviewProps> = memo(({ table, isAuthenticated
 
               return (
                 <div key={index} className={`player-row ${isInactive ? "inactive" : ""}`}>
-                  <span className="player-name">{seat.user.username}</span>
-                  <span className="player-cash">{balance.toLocaleString("mn-MN")}</span>
+                  <div className="player-name">{seat.user.username}</div>
+                  <div className="player-flag-icon"></div>
+                  <div className="player-cash">{balance.toLocaleString("mn-MN")}</div>
                 </div>
               );
             })}

@@ -22,8 +22,8 @@ const TexasTablePlayerSeats: React.FC<Props> = ({ gameState, userInfo, seatCount
   const hasTakenSeat = mySeatIndex !== -1;
   const isMobile = useIsMobile();
 
-  const positions = getSeatLayouts(seatCount, isMobile);
-  const chipOffsets = getChipOffsets(seatCount, isMobile);
+  const positions = getSeatLayouts(seatCount);
+  const chipOffsets = getChipOffsets(seatCount);
 
   const [collectingChips, setCollectingChips] = useState<Record<number, boolean>>({});
   const previousStateRef = useRef(gameState.state);
@@ -144,8 +144,9 @@ const TexasTablePlayerSeats: React.FC<Props> = ({ gameState, userInfo, seatCount
                     className={collectingChips[ind] ? "player-bet-collecting" : ""}
                     style={{
                       position: "absolute",
-                      left: `calc(${pos.x}% + ${chipOffsets[ind]?.x || 0}px)`,
-                      top: `calc(${pos.y}% + ${chipOffsets[ind]?.y || 0}px)`,
+                      left: `${pos.x + (chipOffsets[ind]?.x || 0)}%`,
+                      top: `${pos.y + (chipOffsets[ind]?.y || 0)}%`,
+                      transform: "translate(-50%, -50%)",
                     }}
                   >
                     <PokerChip amount={playerBet} />

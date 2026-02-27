@@ -2,12 +2,12 @@ import React, { useEffect, useState, useMemo, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useMeQuery } from "../api/user";
 import { setAuthenticated, setUserInfo, setUserBalance } from "../providers/auth-slice";
-import { useNavigate } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
 import JackpotText from "./JackpotText";
 
 import Avatar from "../assets/image/avatar/6820.png";
 import { useIsMobile } from "../hooks/useIsMobile";
+import Menu from "./Menu";
 
 const UserFinanceModal = React.lazy(() => import("../components/UserFinanceModal"));
 const AdminChat = React.lazy(() => import("../components/AdminChat"));
@@ -27,7 +27,6 @@ interface MainHeaderProps {
 
 const MainHeader: React.FC<MainHeaderProps> = ({ showLoginModal, totalUsers, totalTables, isMenuOpen, onToggleMenu, closeMenu }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const handleLogout = useLogout();
 
   const [activeModal, setActiveModal] = useState<"finance" | "bonus" | "myRegister" | "settings" | "info" | null>(null);
@@ -153,92 +152,19 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showLoginModal, totalUsers, tot
         </div>
       </div>
 
-      <div className={`mobile-menu-overlay ${isMenuOpen ? "active" : ""}`} onClick={closeMenu}>
-        <div className="mobile-menu-content" onClick={(e) => e.stopPropagation()}>
-          <div className="container">
-            <div className="menu-close-container" onClick={closeMenu}>
-              <div className="close-icon" />
-              <div className="close-title">Буцах</div>
-            </div>
-            <div className="menu-options">
-              <div className="options-box settings" onClick={openSettingsModal}>
-                <div className="options-icon settings"></div>
-                <div className="profile-text">Тохиргоо</div>
-              </div>
-              {isAuthenticated && (
-                <>
-                  <div className={`options-box profile ${isProfileExpanded ? "expanded" : ""}`} onClick={() => setIsProfileExpanded((prev) => !prev)}>
-                    <div className="options-icon user"></div>
-                    <div className="profile-text">Бүртгэл</div>
-                    <div className="dropdown-arrow"></div>
-                  </div>
+      <Menu
+        isMenuOpen={isMenuOpen}
+        closeMenu={closeMenu}
+        openSettingsModal={openSettingsModal}
+        isAuthenticated={isAuthenticated}
+        isProfileExpanded={isProfileExpanded}
+        setIsProfileExpanded={setIsProfileExpanded}
+        openBonusModal={openBonusModal}
+        openInfoModal={openInfoModal}
+        handleLogout={handleLogout}
+        isAdmin={isAdmin}
+      />
 
-                  {isProfileExpanded && (
-                    <div className="options-submenu">
-                      <div className="options-subitem">Дансны мэдээлэл</div>
-                      <div className="options-subitem">Нууц үг солих</div>
-                      <div className="options-subitem">Имэйлийг өөрчлөх</div>
-                      <div className="options-subitem">Хаяг өөрчлөх</div>
-                      <div className="options-subitem">Утасны дугаар солих</div>
-                      <div className="options-subitem">Лавлах хөтөлбөр</div>
-                    </div>
-                  )}
-
-                  <div className="options-box history">
-                    <div className="options-icon history"></div>
-                    <div className="profile-text">Тоглолтын түүх</div>
-                  </div>
-                  <div className="options-box tournaments">
-                    <div className="options-icon tournaments"></div>
-                    <div className="profile-text">Миний тэмцээнүүд</div>
-                  </div>
-                  <div className="options-box tables">
-                    <div className="options-icon tables"></div>
-                    <div className="profile-text">Миний ширээнүүд</div>
-                  </div>
-
-                  <div className="options-box bonus" onClick={openBonusModal}>
-                    <div className="options-icon bonus"></div>
-                    <div className="profile-text">Бонус</div>
-                  </div>
-                </>
-              )}
-
-              {isAdmin && (
-                <div
-                  className="options-box admin"
-                  onClick={() => {
-                    navigate("/admin");
-                  }}
-                >
-                  <div className="options-icon admin"></div>
-                  <div className="profile-text">Админ Панел</div>
-                </div>
-              )}
-              <div className="options-box info" onClick={openInfoModal}>
-                <div className="options-icon info"></div>
-                <div className="profile-text">Тухай</div>
-              </div>
-              {isAuthenticated && (
-                <>
-                  <div className="options-box telegram" onClick={handleLogout}>
-                    <div className="options-icon telegram"></div>
-                    <div className="profile-text">Телеграммаар холбогдох</div>
-                  </div>
-                  <div className="options-box facebook" onClick={handleLogout}>
-                    <div className="options-icon facebook"></div>
-                    <div className="profile-text">Фэйсбүүкээр холбогдох</div>
-                  </div>
-                  <div className="options-box logout" onClick={handleLogout}>
-                    <div className="options-icon logout"></div>
-                    <div className="profile-text">Системээс гарах</div>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="user-section-wrapper">
         <div className="user-header">
           {!isMobile && <div className="header-menu" onClick={onToggleMenu} />}

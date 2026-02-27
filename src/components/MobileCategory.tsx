@@ -9,9 +9,11 @@ import Cashier from "../assets/image/icons/bottom-nav-cashier-icon-blue.svg";
 
 type Props = {
   category: TableCategory;
-  onChange: React.Dispatch<React.SetStateAction<TableCategory>>;
+  onChange: (newCategory: TableCategory) => void;
   isMenuOpen?: boolean;
   onToggleMenu?: () => void;
+  closeBottomSheet?: () => void;
+  openBottomSheet?: () => void;
 };
 
 const categories: { key: TableCategory; label: string; icon: string }[] = [
@@ -22,14 +24,20 @@ const categories: { key: TableCategory; label: string; icon: string }[] = [
   { key: "Settings", label: "Цэс", icon: Navbar },
 ];
 
-const MobileCategory = memo(function MobileCategory({ category, onChange, isMenuOpen = false, onToggleMenu }: Props) {
+const MobileCategory = memo(function MobileCategory({ category, onChange, isMenuOpen = false, onToggleMenu, closeBottomSheet }: Props) {
   return (
     <div className="mobile-category">
       {categories.map((c) => {
         const isActive = category === c.key;
-
-        const handleClick = c.key === "Settings" && onToggleMenu ? onToggleMenu : () => onChange(c.key);
-
+        const handleClick =
+          c.key === "Settings" && onToggleMenu
+            ? onToggleMenu
+            : c.key === "Ширээнүүд"
+              ? () => onChange(c.key)
+              : () => {
+                  if (closeBottomSheet) closeBottomSheet();
+                  onChange(c.key);
+                };
         return (
           <button
             key={c.key}

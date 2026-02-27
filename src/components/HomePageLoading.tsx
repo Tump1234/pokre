@@ -18,7 +18,6 @@ export default function HomePageLoading({ progress = 0, onComplete }: Props) {
     <div className="homepage-loading-fullscreen">
       <div className="loading-overlay">
         <div className="loading-center-logo" />
-        {/* <span className="--loading-text">Golden Swan</span> */}
 
         <div className="progress-bar-container-bottom">
           <div className="progress-bar-fill" style={{ width: `${Math.min(progress, 100)}%` }} />
