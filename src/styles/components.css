@@ -3139,6 +3139,8 @@ input[type="checkbox"]:disabled ~ .checkbox-label {
   margin-block: 1em;
   margin-inline: auto;
   font-size: 1.2em;
+  border: none;
+  cursor: pointer;
 }
 
 .mobile-userInfo {
@@ -3163,6 +3165,9 @@ input[type="checkbox"]:disabled ~ .checkbox-label {
   display: flex;
   height: 100%;
   padding: 0.5em 1em;
+  border: none;
+  color: #fff;
+  cursor: pointer;
 }
 .blance-btn:active {
   background-color: #d9243a;

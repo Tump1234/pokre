@@ -84,7 +84,15 @@ const HomePage = memo(function HomePage() {
   const renderMobileContent = () => {
     switch (category) {
       case "Home":
-        return <MobileHomePage showLoginModal={handleLoginModal} navigateToCashier={handleNavigateToCashier} />;
+        return (
+          <MobileHomePage
+            showLoginModal={handleLoginModal}
+            navigateToCashier={handleNavigateToCashier}
+            showTables={() => setCategory("Ширээнүүд")}
+            showTournaments={() => setCategory("Тэмцээнүүд")}
+            showGames={() => setCategory("Games")}
+          />
+        );
       case "Cashier":
         return <UserFinanceModal isModalVisible={true} isAuthenticated={isAuthenticated} />;
       case "Games":
@@ -109,16 +117,15 @@ const HomePage = memo(function HomePage() {
 
   return (
     <div className="home-page-layout">
-      {!(isMobile && category !== "Home") && (
-        <MainHeader
-          showLoginModal={setModalType}
-          totalUsers={totalUsers}
-          isMenuOpen={isCategoryMenuOpen}
-          totalTables={totalTables}
-          onToggleMenu={toggleMenu}
-          closeMenu={closeMenu}
-        />
-      )}
+      <MainHeader
+        showLoginModal={setModalType}
+        totalUsers={totalUsers}
+        isMenuOpen={isCategoryMenuOpen}
+        totalTables={totalTables}
+        onToggleMenu={toggleMenu}
+        closeMenu={closeMenu}
+        hideHeaderContent={isMobile && category !== "Home"}
+      />
 
       <div className="home-page-container">
         <div className="homepage-grid-layout">
