@@ -23,9 +23,18 @@ interface MainHeaderProps {
   isMenuOpen?: boolean;
   onToggleMenu?: () => void;
   closeMenu?: () => void;
+  hideHeaderContent?: boolean;
 }
 
-const MainHeader: React.FC<MainHeaderProps> = ({ showLoginModal, totalUsers, totalTables, isMenuOpen, onToggleMenu, closeMenu }) => {
+const MainHeader: React.FC<MainHeaderProps> = ({
+  showLoginModal,
+  totalUsers,
+  totalTables,
+  isMenuOpen,
+  onToggleMenu,
+  closeMenu,
+  hideHeaderContent = false,
+}) => {
   const dispatch = useDispatch();
   const handleLogout = useLogout();
 
@@ -133,24 +142,28 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showLoginModal, totalUsers, tot
 
   return (
     <header className="main-header">
-      <div className="header-top">
-        <div className="header-top-left">
-          <div className="left-side time">
-            <div className="left-sideIcon"></div>
-            <div className="left-sideText">{currentTime}</div>
-          </div>
+      {!hideHeaderContent && (
+        <>
+          <div className="header-top">
+            <div className="header-top-left">
+              <div className="left-side time">
+                <div className="left-sideIcon"></div>
+                <div className="left-sideText">{currentTime}</div>
+              </div>
 
-          <div className="left-side users">
-            <div className="left-sideIcon"></div>
-            <div className="left-sideText">{totalUsers?.toLocaleString("mn-MN") ?? 0}</div>
-          </div>
+              <div className="left-side users">
+                <div className="left-sideIcon"></div>
+                <div className="left-sideText">{totalUsers?.toLocaleString("mn-MN") ?? 0}</div>
+              </div>
 
-          <div className="left-side tables">
-            <div className="left-sideIcon"></div>
-            <div className="left-sideText">{totalTables?.toLocaleString("mn-MN") ?? 0}</div>
+              <div className="left-side tables">
+                <div className="left-sideIcon"></div>
+                <div className="left-sideText">{totalTables?.toLocaleString("mn-MN") ?? 0}</div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
 
       <Menu
         isMenuOpen={isMenuOpen}
@@ -165,60 +178,62 @@ const MainHeader: React.FC<MainHeaderProps> = ({ showLoginModal, totalUsers, tot
         isAdmin={isAdmin}
       />
 
-      <div className="user-section-wrapper">
-        <div className="user-header">
-          {!isMobile && <div className="header-menu" onClick={onToggleMenu} />}
-          <div className="header-menu-logo">
-            <div className="logo-svg">
-              <div className="icon-box" />
-            </div>
+      {!hideHeaderContent && (
+        <div className="user-section-wrapper">
+          <div className="user-header">
+            {!isMobile && <div className="header-menu" onClick={onToggleMenu} />}
+            <div className="header-menu-logo">
+              <div className="logo-svg">
+                <div className="icon-box" />
+              </div>
 
-            {isAuthenticated ? (
-              <div className="user-header-inner">
-                <div className="profile-text-wrapper">
-                  <span className="username-text">{username}</span>
-                  <div className="user-role-wrapper">
-                    <div className="user-role-status" />
-                    <span className="user-role"> {userRole}</span>
+              {isAuthenticated ? (
+                <div className="user-header-inner">
+                  <div className="profile-text-wrapper">
+                    <span className="username-text">{username}</span>
+                    <div className="user-role-wrapper">
+                      <div className="user-role-status" />
+                      <span className="user-role"> {userRole}</span>
+                    </div>
+                    <div className="user-star" />
                   </div>
-                  <div className="user-star" />
+                  <div className="user-picture">
+                    <img src={Avatar} alt="User Avatar" className="user-avatar-image" loading="lazy" />
+                  </div>
                 </div>
-                <div className="user-picture">
-                  <img src={Avatar} alt="User Avatar" className="user-avatar-image" loading="lazy" />
+              ) : (
+                <div className="user-header-inner-login">
+                  <div onClick={() => showLoginModal?.("login")} className="login-btn">
+                    <div className="login-icon" />
+                    <span>Нэвтрэх</span>
+                  </div>
                 </div>
+              )}
+              <div onClick={openFinanceModal} className="cashier-btn">
+                <span>Касс</span>
+                <div className="user-balance">{(userBalance ?? 0).toLocaleString("mn-MN")}</div>
               </div>
-            ) : (
-              <div className="user-header-inner-login">
-                <div onClick={() => showLoginModal?.("login")} className="login-btn">
-                  <div className="login-icon" />
-                  <span>Нэвтрэх</span>
-                </div>
-              </div>
-            )}
-            <div onClick={openFinanceModal} className="cashier-btn">
-              <span>Касс</span>
-              <div className="user-balance">{(userBalance ?? 0).toLocaleString("mn-MN")}</div>
-            </div>
 
-            <div className="jackpot-box">
-              <div className="jackpot-text">
-                <span>MonteCarlo</span>
-                <span>Jackpot</span>
+              <div className="jackpot-box">
+                <div className="jackpot-text">
+                  <span>MonteCarlo</span>
+                  <span>Jackpot</span>
+                </div>
+                <JackpotText />
               </div>
-              <JackpotText />
-            </div>
 
-            <div className="header-top-right">
-              <div className="right-side settings" onClick={openSettingsModal}>
-                <div className="right-sideIcon"></div>
-              </div>
-              <div className="right-side fullscreen">
-                <div className={`right-sideIcon ${isFullscreen ? "is-fullscreen" : ""}`} onClick={toggleFullscreen} />
+              <div className="header-top-right">
+                <div className="right-side settings" onClick={openSettingsModal}>
+                  <div className="right-sideIcon"></div>
+                </div>
+                <div className="right-side fullscreen">
+                  <div className={`right-sideIcon ${isFullscreen ? "is-fullscreen" : ""}`} onClick={toggleFullscreen} />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {isModal && (
         <div className="modal-overlay">

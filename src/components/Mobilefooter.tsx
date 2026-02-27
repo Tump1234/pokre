@@ -38,7 +38,7 @@ function Mobilefooter({ showLoginModal, navigateToCashier }: MobilefooterProps) 
 
   return (
     <>
-      <div className="footer-bottom">
+      <div className="footer-bottom mobile-footer-bottom">
         <div className="footer-container">
           <div className="network-quality">
             <div className="left-side users">
@@ -53,7 +53,7 @@ function Mobilefooter({ showLoginModal, navigateToCashier }: MobilefooterProps) 
           </div>
         </div>
 
-        <div className="footer-left" style={{ marginRight: "0.5em", gap: "0.5em" }}>
+        <div className="footer-left mobile-footer-left">
           <div className="footer-item language-select">
             <div className="icon language-icon" />
             <span>Монгол</span>
@@ -62,20 +62,20 @@ function Mobilefooter({ showLoginModal, navigateToCashier }: MobilefooterProps) 
         </div>
       </div>
       {!isAuthenticated ? (
-        <div className="mobile-auth-btn" onClick={showLoginModal}>
+        <button className="mobile-auth-btn" type="button" onClick={showLoginModal}>
           Нэвтрэх
-        </div>
+        </button>
       ) : (
         <div className="mobile-userInfo">
-          <div className="blance-btn" onClick={navigateToCashier}>
+          <button className="blance-btn" type="button" onClick={navigateToCashier}>
             Касс
-          </div>
+          </button>
           <div className="balnce-currency">MNT</div>
-          <div className="mb-user-balance"> {userBalance}</div>
+          <div className="mb-user-balance">{userBalance}</div>
         </div>
       )}
 
-      <div className="contact-admin">
+      <div className="contact-admin mobile-contact-admin">
         <a href="https://t.me/+7TOEB475f9EzM2Fl" target="_blank" rel="noopener noreferrer">
           <img src={gifSrc} alt="admin-gif-1" className="slide-gif" />
         </a>
